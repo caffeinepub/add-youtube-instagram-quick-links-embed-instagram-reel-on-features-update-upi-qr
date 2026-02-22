@@ -1,0 +1,61 @@
+{
+  "kind": "build_request",
+  "title": "Fix mobile layout alignment on Android devices",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Fix the mobile (Android) layout alignment issue where content is shifted to the right. Ensure all page content is properly centered on Android devices in normal browsing mode while preserving the existing desktop layout.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "in the Android normal browsing mode, the website is slightly aligned to the right side",
+          "align the website to center in normal Android mode"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All content is centered on Android mobile devices",
+        "No horizontal overflow or right-side shift occurs on mobile viewports",
+        "Desktop layout remains unchanged and properly centered",
+        "All interactive elements (buttons, forms, cards) are accessible without horizontal scrolling"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Review and fix responsive layout styles in index.css and component-level styles to eliminate any CSS rules causing right-alignment or horizontal overflow on mobile devices. Ensure proper viewport meta tag configuration and mobile-first responsive breakpoints.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "makes some things uncomfortable and some things terrible"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mobile viewport is properly configured with correct meta tags",
+        "All containers use proper responsive width constraints (max-w-full, container classes)",
+        "No fixed-width elements cause horizontal overflow on narrow screens",
+        "Touch targets meet minimum size requirements for mobile usability"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify the desktop layout or styling",
+    "Preserve all existing component functionality and interactivity",
+    "Maintain the dark theme and glassmorphism design aesthetic"
+  ],
+  "nonGoals": [
+    "Redesigning the mobile UI beyond fixing alignment",
+    "Adding new mobile-specific features",
+    "Changing the color scheme or visual design",
+    "Modifying backend functionality"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

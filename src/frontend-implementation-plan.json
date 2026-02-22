@@ -1,0 +1,111 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix mobile layout alignment on Android devices",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Fix the mobile (Android) layout alignment issue where content is shifted to the right. Ensure all page content is properly centered on Android devices in normal browsing mode while preserving the existing desktop layout.",
+      "acceptanceCriteria": [
+        "All content is centered on Android mobile devices",
+        "No horizontal overflow or right-side shift occurs on mobile viewports",
+        "Desktop layout remains unchanged and properly centered",
+        "All interactive elements (buttons, forms, cards) are accessible without horizontal scrolling"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Verify and ensure the viewport meta tag is properly configured with width=device-width, initial-scale=1, maximum-scale=5, and user-scalable=yes to prevent layout shifts on Android devices."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add mobile-specific fixes to prevent right-alignment: ensure html and body elements have width: 100%, overflow-x: hidden, and proper box-sizing. Add utility classes for mobile container constraints if needed."
+        },
+        {
+          "path": "frontend/src/components/site/SiteLayout.tsx",
+          "operation": "modify",
+          "description": "Review and fix container widths and padding in the layout component to ensure proper centering on mobile. Add responsive constraints using Tailwind classes like max-w-full and px-4 for mobile viewports while preserving desktop layout."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Fix any fixed-width or margin/padding issues causing right-shift on mobile. Ensure hero section and content containers use responsive width classes and proper mobile padding."
+        },
+        {
+          "path": "frontend/src/pages/FeaturesPage.tsx",
+          "operation": "modify",
+          "description": "Review grid layout and card containers to ensure they don't cause horizontal overflow on narrow screens. Apply mobile-first responsive classes and proper gap/padding values."
+        },
+        {
+          "path": "frontend/src/pages/PricingPage.tsx",
+          "operation": "modify",
+          "description": "Fix pricing cards and payment section layout to prevent right-alignment on mobile. Ensure proper container constraints and responsive spacing."
+        },
+        {
+          "path": "frontend/src/pages/ContactPage.tsx",
+          "operation": "modify",
+          "description": "Ensure contact cards are properly centered and don't overflow on mobile viewports. Add responsive width constraints if needed."
+        },
+        {
+          "path": "frontend/src/pages/DemoPage.tsx",
+          "operation": "modify",
+          "description": "Fix demo request card alignment and ensure proper centering on mobile devices without horizontal overflow."
+        },
+        {
+          "path": "frontend/src/components/pricing/PricingPlans.tsx",
+          "operation": "modify",
+          "description": "Review pricing tier cards for mobile layout issues. Ensure cards stack properly and don't cause right-shift with proper responsive classes."
+        },
+        {
+          "path": "frontend/src/components/pricing/PaymentSection.tsx",
+          "operation": "modify",
+          "description": "Fix payment form and QR code container alignment on mobile. Ensure proper centering and no horizontal overflow with responsive constraints."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Review and fix responsive layout styles in index.css and component-level styles to eliminate any CSS rules causing right-alignment or horizontal overflow on mobile devices. Ensure proper viewport meta tag configuration and mobile-first responsive breakpoints.",
+      "acceptanceCriteria": [
+        "Mobile viewport is properly configured with correct meta tags",
+        "All containers use proper responsive width constraints (max-w-full, container classes)",
+        "No fixed-width elements cause horizontal overflow on narrow screens",
+        "Touch targets meet minimum size requirements for mobile usability"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Review and ensure mobile-first breakpoints are properly configured. Add any missing responsive utilities needed to fix mobile alignment issues."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add comprehensive mobile layout fixes: ensure all base elements (html, body, #root) use width: 100%, min-height: 100vh, overflow-x: hidden, and proper box-sizing. Add mobile-specific utility classes for preventing horizontal overflow and ensuring proper centering."
+        },
+        {
+          "path": "frontend/src/components/chatbot/ChatbotWidget.tsx",
+          "operation": "modify",
+          "description": "Review chatbot positioning and sizing on mobile to ensure it doesn't cause layout shifts or overflow. Adjust button size and dialog width for mobile viewports while maintaining touch target accessibility."
+        },
+        {
+          "path": "frontend/src/components/features/FeatureCard.tsx",
+          "operation": "modify",
+          "description": "Ensure feature cards use responsive width constraints and proper padding that doesn't cause overflow on narrow screens. Verify touch targets meet minimum 44x44px size."
+        },
+        {
+          "path": "frontend/src/components/sections/PodcastSection.tsx",
+          "operation": "modify",
+          "description": "Fix podcast card layout for mobile viewports. Ensure proper width constraints and no horizontal overflow with responsive padding and margin classes."
+        },
+        {
+          "path": "frontend/src/components/sections/ExploreMoreSection.tsx",
+          "operation": "modify",
+          "description": "Ensure explore more card is properly centered on mobile with no overflow. Apply responsive width and padding constraints."
+        }
+      ]
+    }
+  ]
+}
