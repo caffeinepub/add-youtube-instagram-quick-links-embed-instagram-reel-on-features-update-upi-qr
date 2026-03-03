@@ -1,0 +1,49 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-fix-the-mobile-android-layout-alignment-issue-where-content-is-shifted-to-the-right-ensure-all-page-content-is-properly-centered-on-android-devices-in-normal-browsing-mode-while-preserving-the-existing-desktop-layout",
+      "featureTitle": "Fix the mobile (Android) layout alignment issue where content is shifted to the right. Ensure all page content is properly centered on Android devices in normal browsing mode while preserving the existing desktop layout.",
+      "files": [
+        "frontend/index.html",
+        "frontend/src/components/site/SiteLayout.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/ContactPage.tsx",
+        "frontend/src/pages/DemoPage.tsx",
+        "frontend/src/pages/FeaturesPage.tsx",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/PricingPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-review-and-fix-responsive-layout-styles-in-index-css-and-component-level-styles-to-eliminate-any-css-rules-causing-right-alignment-or-horizontal-overflow-on-mobile-devices-ensure-proper-viewport-meta-tag-configuration-and-mobile-first-responsive-breakpoints",
+      "featureTitle": "Review and fix responsive layout styles in index.css and component-level styles to eliminate any CSS rules causing right-alignment or horizontal overflow on mobile devices. Ensure proper viewport meta tag configuration and mobile-first responsive breakpoints.",
+      "files": [
+        "frontend/src/components/chatbot/ChatbotWidget.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

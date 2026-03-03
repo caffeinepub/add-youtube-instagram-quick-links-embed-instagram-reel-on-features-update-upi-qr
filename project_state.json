@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "New project",
+  "architectural_notes": [],
+  "known_issues": [
+    "Mobile (Android) view has right-alignment issue causing layout problems"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-fix-the-mobile-android-layout-alignment-issue-where-content-is-shifted-to-the-right-ensure-all-page-content-is-properly-centered-on-android-devices-in-normal-browsing-mode-while-preserving-the-existing-desktop-layout",
+      "title": "Fix the mobile (Android) layout alignment issue where content is shifted to the right. Ensure all page content is properly centered on Android devices in normal browsing mode while preserving the existing desktop layout.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-review-and-fix-responsive-layout-styles-in-index-css-and-component-level-styles-to-eliminate-any-css-rules-causing-right-alignment-or-horizontal-overflow-on-mobile-devices-ensure-proper-viewport-meta-tag-configuration-and-mobile-first-responsive-breakpoints",
+      "title": "Review and fix responsive layout styles in index.css and component-level styles to eliminate any CSS rules causing right-alignment or horizontal overflow on mobile devices. Ensure proper viewport meta tag configuration and mobile-first responsive breakpoints.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [],
+  "projectName": "Fix mobile layout alignment on Android devices",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
