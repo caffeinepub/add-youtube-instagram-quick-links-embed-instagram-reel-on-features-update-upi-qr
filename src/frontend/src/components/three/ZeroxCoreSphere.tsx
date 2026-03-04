@@ -1,15 +1,15 @@
-import { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Sphere, Ring } from '@react-three/drei';
-import * as THREE from 'three';
-import ThreeCanvas from './ThreeCanvas';
+import { Ring, Sphere } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useRef, useState } from "react";
+import type * as THREE from "three";
+import ThreeCanvas from "./ThreeCanvas";
 
 function CoreSphere() {
   const sphereRef = useRef<THREE.Mesh>(null);
   const ring1Ref = useRef<THREE.Mesh>(null);
   const ring2Ref = useRef<THREE.Mesh>(null);
   const ring3Ref = useRef<THREE.Mesh>(null);
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const previousMouse = useRef({ x: 0, y: 0 });

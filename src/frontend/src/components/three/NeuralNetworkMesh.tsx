@@ -1,7 +1,7 @@
-import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-import ThreeCanvas from './ThreeCanvas';
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+import ThreeCanvas from "./ThreeCanvas";
 
 function NeuralMesh() {
   const pointsRef = useRef<THREE.Points>(null);
@@ -62,13 +62,16 @@ function NeuralMesh() {
 
   const pointsGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     return geometry;
   }, [positions]);
 
   const linesGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+    geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(linePositions, 3),
+    );
     return geometry;
   }, [linePositions]);
 

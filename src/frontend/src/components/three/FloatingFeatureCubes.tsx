@@ -1,20 +1,20 @@
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Box } from '@react-three/drei';
-import * as THREE from 'three';
-import ThreeCanvas from './ThreeCanvas';
+import { Box } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import type * as THREE from "three";
+import ThreeCanvas from "./ThreeCanvas";
 
 function Cubes() {
   const groupRef = useRef<THREE.Group>(null);
   const cubesRef = useRef<THREE.Mesh[]>([]);
 
   const cubePositions = [
-    [-3, 2, 0],
-    [0, 2, 0],
-    [3, 2, 0],
-    [-3, -1, 0],
-    [0, -1, 0],
-    [3, -1, 0],
+    { id: "c0", pos: [-3, 2, 0] as [number, number, number] },
+    { id: "c1", pos: [0, 2, 0] as [number, number, number] },
+    { id: "c2", pos: [3, 2, 0] as [number, number, number] },
+    { id: "c3", pos: [-3, -1, 0] as [number, number, number] },
+    { id: "c4", pos: [0, -1, 0] as [number, number, number] },
+    { id: "c5", pos: [3, -1, 0] as [number, number, number] },
   ];
 
   useFrame((state) => {
@@ -25,21 +25,21 @@ function Cubes() {
       if (cube) {
         cube.rotation.x = time * 0.3 + i * 0.5 + scrollY;
         cube.rotation.y = time * 0.2 + i * 0.3 + scrollY;
-        cube.position.y = cubePositions[i][1] + Math.sin(time + i) * 0.3;
+        cube.position.y = cubePositions[i].pos[1] + Math.sin(time + i) * 0.3;
       }
     });
   });
 
   return (
     <group ref={groupRef}>
-      {cubePositions.map((position, i) => (
+      {cubePositions.map(({ id, pos }, i) => (
         <Box
-          key={i}
+          key={id}
           ref={(el) => {
             if (el) cubesRef.current[i] = el;
           }}
           args={[0.8, 0.8, 0.8]}
-          position={position as [number, number, number]}
+          position={pos}
         >
           <meshStandardMaterial
             color="#00d9ff"

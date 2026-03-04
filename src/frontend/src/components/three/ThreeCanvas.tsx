@@ -1,14 +1,17 @@
-import { Canvas } from '@react-three/fiber';
-import { type ReactNode } from 'react';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useLowPowerMode } from '@/hooks/useLowPowerMode';
+import { useLowPowerMode } from "@/hooks/useLowPowerMode";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { Canvas } from "@react-three/fiber";
+import type { ReactNode } from "react";
 
 interface ThreeCanvasProps {
   children: ReactNode;
   className?: string;
 }
 
-export default function ThreeCanvas({ children, className = '' }: ThreeCanvasProps) {
+export default function ThreeCanvas({
+  children,
+  className = "",
+}: ThreeCanvasProps) {
   const prefersReducedMotion = useReducedMotion();
   const isLowPower = useLowPowerMode();
 

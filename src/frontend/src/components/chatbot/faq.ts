@@ -6,7 +6,13 @@ export interface FAQ {
 
 export const faqs: FAQ[] = [
   {
-    keywords: ['features', 'capabilities', 'what can', 'what does', 'functions'],
+    keywords: [
+      "features",
+      "capabilities",
+      "what can",
+      "what does",
+      "functions",
+    ],
     response: `Zerox AI offers powerful capabilities including:
 • Voice-controlled AI interaction
 • Real-time speech-to-text and text-to-speech
@@ -20,7 +26,7 @@ Visit our Features page to learn more!`,
     priority: 10,
   },
   {
-    keywords: ['price', 'pricing', 'cost', 'how much', 'payment'],
+    keywords: ["price", "pricing", "cost", "how much", "payment"],
     response: `We offer two pricing plans:
 
 1. Lifetime Access: ₹599 (one-time payment)
@@ -31,14 +37,14 @@ Both plans include lifetime updates and all core features!`,
     priority: 10,
   },
   {
-    keywords: ['student', 'verification', 'verify', 'student plan'],
+    keywords: ["student", "verification", "verify", "student plan"],
     response: `The Student Lifetime Plan is available for ₹399 and requires student verification.
 
 After payment, you'll need to provide proof of student status (student ID, enrollment letter, etc.) via WhatsApp to complete verification.`,
     priority: 9,
   },
   {
-    keywords: ['upi', 'pay', 'payment method', 'how to pay'],
+    keywords: ["upi", "pay", "payment method", "how to pay"],
     response: `Payment is simple via UPI:
 
 1. Use UPI ID: divyamarora@fam
@@ -51,7 +57,7 @@ You'll receive access after verification!`,
     priority: 10,
   },
   {
-    keywords: ['whatsapp', 'contact', 'support', 'help', 'verify payment'],
+    keywords: ["whatsapp", "contact", "support", "help", "verify payment"],
     response: `You can reach us via WhatsApp at: +91 7014270402
 
 We're here to help with:
@@ -64,7 +70,7 @@ Feel free to message us anytime!`,
     priority: 9,
   },
   {
-    keywords: ['podcast', 'jolly podcast', 'listen'],
+    keywords: ["podcast", "jolly podcast", "listen"],
     response: `Check out The Jolly Podcast! 🎧
 
 We discuss technology, innovation, and the future of AI. Visit our podcast page or go directly to:
@@ -74,7 +80,7 @@ New episodes regularly!`,
     priority: 8,
   },
   {
-    keywords: ['beacons', 'more', 'explore', 'portfolio', 'projects'],
+    keywords: ["beacons", "more", "explore", "portfolio", "projects"],
     response: `Explore more from Jolly Tech on our Beacons page! 🚀
 
 Visit: https://website.beacons.ai/divyamarora
@@ -83,7 +89,7 @@ Discover our complete portfolio of projects, content, and innovations.`,
     priority: 8,
   },
   {
-    keywords: ['install', 'download', 'get started', 'setup'],
+    keywords: ["install", "download", "get started", "setup"],
     response: `After purchasing Zerox AI, you'll receive:
 • Download link for the installer
 • Setup instructions
@@ -94,7 +100,7 @@ Complete payment and verification to get instant access!`,
     priority: 7,
   },
   {
-    keywords: ['lifetime', 'updates', 'subscription'],
+    keywords: ["lifetime", "updates", "subscription"],
     response: `Both our plans offer LIFETIME access with no recurring fees!
 
 You pay once and get:
@@ -107,7 +113,7 @@ It's a one-time investment in your productivity!`,
     priority: 8,
   },
   {
-    keywords: ['hello', 'hi', 'hey', 'greetings'],
+    keywords: ["hello", "hi", "hey", "greetings"],
     response: `Hello! 👋 Welcome to Jolly Tech!
 
 I'm here to help you with:

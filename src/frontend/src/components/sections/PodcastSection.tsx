@@ -1,11 +1,11 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Headphones, ExternalLink } from 'lucide-react';
-import AudioWave from './AudioWave';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ExternalLink, Headphones } from "lucide-react";
+import AudioWave from "./AudioWave";
 
 export default function PodcastSection() {
   const handlePodcastClick = () => {
-    window.open('https://thejollypodcast.wordpress.com/', '_blank');
+    window.open("https://thejollypodcast.wordpress.com/", "_blank");
   };
 
   return (
@@ -22,7 +22,8 @@ export default function PodcastSection() {
           </h2>
 
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Tune in to conversations about technology, innovation, and the future of AI. Join us on our journey through the world of tech.
+            Tune in to conversations about technology, innovation, and the
+            future of AI. Join us on our journey through the world of tech.
           </p>
 
           <div className="py-8">

@@ -1,10 +1,16 @@
-import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
-import { Button } from '@/components/ui/button';
-import BrandMark from './BrandMark';
-import ChatbotWidget from '@/components/chatbot/ChatbotWidget';
-import { Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import { SiX, SiFacebook, SiLinkedin, SiInstagram, SiYoutube } from 'react-icons/si';
+import ChatbotWidget from "@/components/chatbot/ChatbotWidget";
+import { Button } from "@/components/ui/button";
+import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
+import {
+  SiFacebook,
+  SiInstagram,
+  SiLinkedin,
+  SiX,
+  SiYoutube,
+} from "react-icons/si";
+import BrandMark from "./BrandMark";
 
 export default function SiteLayout() {
   const navigate = useNavigate();
@@ -13,11 +19,12 @@ export default function SiteLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Features', path: '/features' },
-    { label: 'Pricing', path: '/pricing' },
-    { label: 'Demo', path: '/demo' },
-    { label: 'Contact', path: '/contact' },
+    { label: "Home", path: "/" },
+    { label: "Features", path: "/features" },
+    { label: "Pricing", path: "/pricing" },
+    { label: "Monthly", path: "/monthly-pricing" },
+    { label: "Demo", path: "/demo" },
+    { label: "Contact", path: "/contact" },
   ];
 
   const isActive = (path: string) => currentPath === path;
@@ -31,19 +38,20 @@ export default function SiteLayout() {
             <BrandMark />
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
                 <Button
                   key={item.path}
                   variant="ghost"
-                  className={`text-base transition-all ${
+                  className={`font-mono text-sm tracking-wide transition-all px-3 ${
                     isActive(item.path)
-                      ? 'text-cyan-400 border-b-2 border-cyan-400 rounded-none'
-                      : 'text-foreground/80 hover:text-cyan-400'
+                      ? "text-cyan-400 border-b-2 border-cyan-400 rounded-none bg-cyan-500/5"
+                      : "text-foreground/70 hover:text-cyan-400 hover:bg-cyan-500/5"
                   }`}
                   onClick={() => navigate({ to: item.path })}
+                  data-ocid={`nav.${item.label.toLowerCase().replace(" ", "_")}.link`}
                 >
-                  {item.label}
+                  {isActive(item.path) ? `[${item.label}]` : item.label}
                 </Button>
               ))}
             </nav>
@@ -55,26 +63,33 @@ export default function SiteLayout() {
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </Button>
           </div>
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <nav className="md:hidden py-4 space-y-2 border-t border-cyan-500/20">
+            <nav className="md:hidden py-4 space-y-1 border-t border-cyan-500/20">
               {navItems.map((item) => (
                 <Button
                   key={item.path}
                   variant="ghost"
-                  className={`w-full justify-start text-base ${
-                    isActive(item.path) ? 'text-cyan-400 bg-cyan-500/10' : 'text-foreground/80'
+                  className={`w-full justify-start font-mono text-sm tracking-wide ${
+                    isActive(item.path)
+                      ? "text-cyan-400 bg-cyan-500/10"
+                      : "text-foreground/70 hover:text-cyan-400 hover:bg-cyan-500/5"
                   }`}
                   onClick={() => {
                     navigate({ to: item.path });
                     setMobileMenuOpen(false);
                   }}
+                  data-ocid={`nav.${item.label.toLowerCase().replace(" ", "_")}.link`}
                 >
-                  {item.label}
+                  {isActive(item.path) ? `[${item.label}]` : item.label}
                 </Button>
               ))}
             </nav>
@@ -93,19 +108,21 @@ export default function SiteLayout() {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="space-y-4">
               <BrandMark />
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-mono">
                 Next-generation AI intelligence for your desktop
               </p>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-cyan-400">Quick Links</h3>
+              <h3 className="text-lg font-semibold text-cyan-400 font-mono tracking-wider">
+                Quick Links
+              </h3>
               <div className="flex flex-col gap-2">
                 {navItems.map((item) => (
                   <Button
                     key={item.path}
                     variant="link"
-                    className="justify-start p-0 h-auto text-muted-foreground hover:text-cyan-400"
+                    className="justify-start p-0 h-auto text-muted-foreground hover:text-cyan-400 font-mono text-sm"
                     onClick={() => navigate({ to: item.path })}
                   >
                     {item.label}
@@ -115,7 +132,7 @@ export default function SiteLayout() {
                   href="https://thejollypodcast.wordpress.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left"
+                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left font-mono"
                 >
                   Podcast
                 </a>
@@ -123,7 +140,7 @@ export default function SiteLayout() {
                   href="https://website.beacons.ai/divyamarora"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left"
+                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left font-mono"
                 >
                   Beacons
                 </a>
@@ -131,7 +148,7 @@ export default function SiteLayout() {
                   href="https://youtube.com/@jollygamerytog"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left"
+                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left font-mono"
                 >
                   YouTube
                 </a>
@@ -139,7 +156,7 @@ export default function SiteLayout() {
                   href="https://www.instagram.com/divyyam_arora?igsh=bmx2emxhOGowa2tq"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left"
+                  className="text-muted-foreground hover:text-cyan-400 text-sm transition-colors text-left font-mono"
                 >
                   Instagram
                 </a>
@@ -147,7 +164,9 @@ export default function SiteLayout() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-cyan-400">Connect</h3>
+              <h3 className="text-lg font-semibold text-cyan-400 font-mono tracking-wider">
+                Connect
+              </h3>
               <div className="flex gap-4">
                 <a
                   href="https://youtube.com/@jollygamerytog"
@@ -165,25 +184,39 @@ export default function SiteLayout() {
                 >
                   <SiInstagram className="w-5 h-5" />
                 </a>
-                <Button variant="ghost" size="icon" className="hover:text-cyan-400">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-cyan-400 h-auto p-0"
+                >
                   <SiX className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="hover:text-cyan-400">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-cyan-400 h-auto p-0"
+                >
                   <SiFacebook className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="hover:text-cyan-400">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-cyan-400 h-auto p-0"
+                >
                   <SiLinkedin className="w-5 h-5" />
                 </Button>
               </div>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-cyan-500/20 text-center text-sm text-muted-foreground">
+          <div className="pt-8 border-t border-cyan-500/20 text-center text-sm text-muted-foreground font-mono">
             <p>
-              © {new Date().getFullYear()} Jolly Tech. Built with ❤️ using{' '}
+              © {new Date().getFullYear()} Jolly Tech. Built with ❤️ using{" "}
               <a
                 href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-                  typeof window !== 'undefined' ? window.location.hostname : 'zerox-ai'
+                  typeof window !== "undefined"
+                    ? window.location.hostname
+                    : "zerox-ai",
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"

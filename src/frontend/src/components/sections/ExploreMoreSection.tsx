@@ -1,10 +1,10 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ExternalLink, Sparkles } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ExternalLink, Sparkles } from "lucide-react";
 
 export default function ExploreMoreSection() {
   const handleExploreClick = () => {
-    window.open('https://website.beacons.ai/divyamarora', '_blank');
+    window.open("https://website.beacons.ai/divyamarora", "_blank");
   };
 
   return (
@@ -13,7 +13,9 @@ export default function ExploreMoreSection() {
         <CardContent className="p-12 text-center space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30">
             <Sparkles className="w-4 h-4 text-purple-400" />
-            <span className="text-sm text-purple-300 font-medium">Discover More</span>
+            <span className="text-sm text-purple-300 font-medium">
+              Discover More
+            </span>
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -21,7 +23,9 @@ export default function ExploreMoreSection() {
           </h2>
 
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover our complete portfolio of projects, content, and innovations. Visit our Beacons page to explore everything we're building.
+            Discover our complete portfolio of projects, content, and
+            innovations. Visit our Beacons page to explore everything we're
+            building.
           </p>
 
           <Button

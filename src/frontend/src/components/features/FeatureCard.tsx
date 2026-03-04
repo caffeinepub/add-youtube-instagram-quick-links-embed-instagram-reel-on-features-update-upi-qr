@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { ZeroxFeature } from '@/content/zeroxFeatures';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { ZeroxFeature } from "@/content/zeroxFeatures";
 
 interface FeatureCardProps {
   feature: ZeroxFeature;

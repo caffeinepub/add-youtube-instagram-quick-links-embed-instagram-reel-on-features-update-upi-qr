@@ -1,38 +1,44 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useState } from 'react';
-import { Copy, Check, Send } from 'lucide-react';
-import { copyToClipboard } from '@/utils/clipboard';
-import { createWhatsAppLink } from '@/utils/whatsapp';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { copyToClipboard } from "@/utils/clipboard";
+import { createWhatsAppLink } from "@/utils/whatsapp";
+import { Check, Copy, Send } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function PaymentSection() {
-  const [transactionId, setTransactionId] = useState('');
+  const [transactionId, setTransactionId] = useState("");
   const [copied, setCopied] = useState(false);
-  const upiId = 'divyamarora@fam';
+  const upiId = "divyamarora@fam";
 
   const handleCopyUPI = async () => {
     const success = await copyToClipboard(upiId);
     if (success) {
       setCopied(true);
-      toast.success('UPI ID copied to clipboard!');
+      toast.success("UPI ID copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } else {
-      toast.error('Failed to copy UPI ID');
+      toast.error("Failed to copy UPI ID");
     }
   };
 
   const handleVerifyPayment = () => {
     if (!transactionId.trim()) {
-      toast.error('Please enter your transaction ID');
+      toast.error("Please enter your transaction ID");
       return;
     }
 
     const message = `Hello, I have completed the payment for Zerox AI.\nThis is my transaction ID: ${transactionId}.\nPlease verify and provide access.`;
-    const whatsappLink = createWhatsAppLink('917014270402', message);
-    window.open(whatsappLink, '_blank');
+    const whatsappLink = createWhatsAppLink("917014270402", message);
+    window.open(whatsappLink, "_blank");
   };
 
   return (
@@ -50,17 +56,21 @@ export default function PaymentSection() {
           <div className="flex flex-col items-center gap-4">
             <div className="w-64 h-64 rounded-lg overflow-hidden border-2 border-cyan-500/30 bg-white p-2">
               <img
-                src="/assets/generated/Screenshot_2026-02-15-09-53-36-69_ba41e9a642e6e0e2b03656bfbbffd6e4.jpg"
+                src="/assets/Screenshot_2026-02-15-09-53-36-69_ba41e9a642e6e0e2b03656bfbbffd6e4.jpg"
                 alt="UPI QR Code"
                 className="w-full h-full object-contain"
               />
             </div>
-            <p className="text-sm text-muted-foreground">Scan to pay via any UPI app</p>
+            <p className="text-sm text-muted-foreground">
+              Scan to pay via any UPI app
+            </p>
           </div>
 
           {/* UPI ID */}
           <div className="space-y-2">
-            <Label htmlFor="upi-id" className="text-base">UPI ID</Label>
+            <Label htmlFor="upi-id" className="text-base">
+              UPI ID
+            </Label>
             <div className="flex gap-2">
               <Input
                 id="upi-id"
@@ -74,14 +84,20 @@ export default function PaymentSection() {
                 onClick={handleCopyUPI}
                 className="flex-shrink-0 border-cyan-500/50 hover:bg-cyan-500/10"
               >
-                {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-400" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
               </Button>
             </div>
           </div>
 
           {/* Transaction ID Input */}
           <div className="space-y-2">
-            <Label htmlFor="transaction-id" className="text-base">Enter your Transaction ID</Label>
+            <Label htmlFor="transaction-id" className="text-base">
+              Enter your Transaction ID
+            </Label>
             <Input
               id="transaction-id"
               placeholder="e.g., 123456789012"
@@ -105,7 +121,8 @@ export default function PaymentSection() {
           </Button>
 
           <p className="text-sm text-center text-muted-foreground">
-            After clicking verify, you'll be redirected to WhatsApp to complete the verification process
+            After clicking verify, you'll be redirected to WhatsApp to complete
+            the verification process
           </p>
         </CardContent>
       </Card>
