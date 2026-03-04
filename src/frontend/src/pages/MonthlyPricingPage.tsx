@@ -64,7 +64,7 @@ const monthlyTiers: TierData[] = [
   {
     id: "quarterly",
     label: "Quarterly",
-    price: 100,
+    price: 99,
     period: "/quarter",
     description: "Best value for 3 months",
     badge: null,
@@ -76,7 +76,7 @@ const monthlyTiers: TierData[] = [
       "Priority support",
     ],
     whatsappMessage:
-      "Hello! I want to subscribe to Zerox AI Quarterly Plan (₹100/quarter). Please guide me through the process.",
+      "Hello! I want to subscribe to Zerox AI Quarterly Plan (₹99/quarter). Please guide me through the process.",
     gradient: "from-violet-500 to-purple-600",
     borderColor: "border-violet-500/30",
   },
