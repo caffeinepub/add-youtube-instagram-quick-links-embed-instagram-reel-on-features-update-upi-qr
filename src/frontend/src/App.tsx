@@ -9,6 +9,7 @@ import SiteLayout from "./components/site/SiteLayout";
 import ContactPage from "./pages/ContactPage";
 import DemoPage from "./pages/DemoPage";
 import FeaturesPage from "./pages/FeaturesPage";
+import FreeToolsPage from "./pages/FreeToolsPage";
 import HomePage from "./pages/HomePage";
 import MonthlyPricingPage from "./pages/MonthlyPricingPage";
 import PricingPage from "./pages/PricingPage";
@@ -60,6 +61,12 @@ const payRoute = createRoute({
   component: SecurePaymentPage,
 });
 
+const toolsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/tools",
+  component: FreeToolsPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   featuresRoute,
@@ -68,6 +75,7 @@ const routeTree = rootRoute.addChildren([
   demoRoute,
   monthlyPricingRoute,
   payRoute,
+  toolsRoute,
 ]);
 
 const router = createRouter({ routeTree });

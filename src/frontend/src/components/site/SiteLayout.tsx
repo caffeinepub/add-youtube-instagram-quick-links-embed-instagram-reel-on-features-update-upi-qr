@@ -23,6 +23,7 @@ export default function SiteLayout() {
     { label: "Features", path: "/features" },
     { label: "Pricing", path: "/pricing" },
     { label: "Monthly", path: "/monthly-pricing" },
+    { label: "Tools", path: "/tools" },
     { label: "Demo", path: "/demo" },
     { label: "Contact", path: "/contact" },
   ];
@@ -32,7 +33,13 @@ export default function SiteLayout() {
   return (
     <div className="min-h-screen bg-background text-foreground w-full overflow-x-hidden">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-cyan-500/20 w-full">
+      <header
+        className="fixed top-0 left-0 right-0 z-50 border-b border-cyan-500/30 w-full"
+        style={{
+          background: "rgba(5, 8, 22, 0.97)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
         <div className="container mx-auto px-4 max-w-full">
           <div className="flex items-center justify-between h-20">
             <BrandMark />
@@ -43,10 +50,10 @@ export default function SiteLayout() {
                 <Button
                   key={item.path}
                   variant="ghost"
-                  className={`font-mono text-sm tracking-wide transition-all px-3 ${
+                  className={`font-mono text-sm tracking-wide transition-all px-4 py-2 rounded ${
                     isActive(item.path)
-                      ? "text-cyan-400 border-b-2 border-cyan-400 rounded-none bg-cyan-500/5"
-                      : "text-foreground/70 hover:text-cyan-400 hover:bg-cyan-500/5"
+                      ? "text-cyan-300 border border-cyan-400/60 bg-cyan-500/15 font-bold"
+                      : "text-slate-200 hover:text-cyan-300 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/30"
                   }`}
                   onClick={() => navigate({ to: item.path })}
                   data-ocid={`nav.${item.label.toLowerCase().replace(" ", "_")}.link`}
@@ -60,7 +67,7 @@ export default function SiteLayout() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden text-slate-200 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/60 hover:bg-cyan-500/10"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -73,15 +80,18 @@ export default function SiteLayout() {
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <nav className="md:hidden py-4 space-y-1 border-t border-cyan-500/20">
+            <nav
+              className="md:hidden py-4 space-y-1 border-t border-cyan-500/20"
+              style={{ background: "rgba(5, 8, 22, 0.99)" }}
+            >
               {navItems.map((item) => (
                 <Button
                   key={item.path}
                   variant="ghost"
-                  className={`w-full justify-start font-mono text-sm tracking-wide ${
+                  className={`w-full justify-start font-mono text-sm tracking-wide rounded ${
                     isActive(item.path)
-                      ? "text-cyan-400 bg-cyan-500/10"
-                      : "text-foreground/70 hover:text-cyan-400 hover:bg-cyan-500/5"
+                      ? "text-cyan-300 bg-cyan-500/15 border border-cyan-400/50 font-bold"
+                      : "text-slate-200 hover:text-cyan-300 hover:bg-cyan-500/10"
                   }`}
                   onClick={() => {
                     navigate({ to: item.path });

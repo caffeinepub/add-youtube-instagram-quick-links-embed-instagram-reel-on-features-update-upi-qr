@@ -1,11 +1,10 @@
-import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef, useState } from "react";
+import { useLowPowerMode } from "@/hooks/useLowPowerMode";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import ThreeCanvas from "./ThreeCanvas";
 
 // Pre-compute letter positions for "ZEROX"
 function getZeroxTextPositions(): THREE.Vector3[] {
-  // Pixel-art style letter positions for Z-E-R-O-X
   const letters: [number, number][][] = [
     // Z
     [
@@ -77,15 +76,16 @@ function getZeroxTextPositions(): THREE.Vector3[] {
 
 const PARTICLE_COUNT = 800;
 
-function ParticleSphereInner() {
-  const pointsRef = useRef<THREE.Points>(null);
-  const [morphed, setMorphed] = useState(false);
-  const morphProgress = useRef(0);
-  const isDragging = useRef(false);
-  const previousMouse = useRef({ x: 0, y: 0 });
-  const dragRotation = useRef({ x: 0, y: 0 });
+// Shared ref that the canvas wrapper sets; the inner component reads it.
+interface PressRef {
+  pressed: boolean;
+}
 
-  // Sphere positions
+function ParticleSphereInner({ pressRef }: { pressRef: PressRef }) {
+  const pointsRef = useRef<THREE.Points>(null);
+  const morphProgress = useRef(0);
+  const autoRotationTime = useRef(0);
+
   const spherePositions = useMemo(() => {
     const arr = new Float32Array(PARTICLE_COUNT * 3);
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -98,7 +98,6 @@ function ParticleSphereInner() {
     return arr;
   }, []);
 
-  // Text positions
   const textPositions = useMemo(() => {
     const basePositions = getZeroxTextPositions();
     const arr = new Float32Array(PARTICLE_COUNT * 3);
@@ -121,15 +120,15 @@ function ParticleSphereInner() {
     return geo;
   }, [spherePositions]);
 
-  useFrame((state) => {
+  useFrame((_state, delta) => {
     if (!pointsRef.current) return;
-    const time = state.clock.getElapsedTime();
 
-    // Morph progress
-    if (morphed) {
-      morphProgress.current = Math.min(morphProgress.current + 0.03, 1);
+    const morphSpeed = 0.08;
+
+    if (pressRef.pressed) {
+      morphProgress.current = Math.min(morphProgress.current + morphSpeed, 1);
     } else {
-      morphProgress.current = Math.max(morphProgress.current - 0.03, 0);
+      morphProgress.current = Math.max(morphProgress.current - morphSpeed, 0);
     }
 
     const t = morphProgress.current;
@@ -146,49 +145,20 @@ function ParticleSphereInner() {
     }
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
 
-    // Auto-rotate when not morphed and not dragging
-    if (!morphed && !isDragging.current) {
-      pointsRef.current.rotation.y = time * 0.3 + dragRotation.current.y;
+    if (!pressRef.pressed) {
+      autoRotationTime.current += delta;
+      pointsRef.current.rotation.y = autoRotationTime.current * 0.3;
       pointsRef.current.rotation.x =
-        Math.sin(time * 0.2) * 0.1 + dragRotation.current.x;
-    } else if (!morphed && isDragging.current) {
-      pointsRef.current.rotation.y = dragRotation.current.y;
-      pointsRef.current.rotation.x = dragRotation.current.x;
+        Math.sin(autoRotationTime.current * 0.2) * 0.1;
     } else {
-      // When morphed, face forward
-      pointsRef.current.rotation.y += (0 - pointsRef.current.rotation.y) * 0.05;
-      pointsRef.current.rotation.x += (0 - pointsRef.current.rotation.x) * 0.05;
+      pointsRef.current.rotation.y += (0 - pointsRef.current.rotation.y) * 0.08;
+      pointsRef.current.rotation.x += (0 - pointsRef.current.rotation.x) * 0.08;
     }
   });
 
   return (
     <group>
-      <points
-        ref={pointsRef}
-        geometry={geometry}
-        onPointerDown={(e) => {
-          isDragging.current = true;
-          previousMouse.current = { x: e.clientX, y: e.clientY };
-          setMorphed(true);
-          e.stopPropagation();
-        }}
-        onPointerMove={(e) => {
-          if (!isDragging.current) return;
-          const dx = e.clientX - previousMouse.current.x;
-          const dy = e.clientY - previousMouse.current.y;
-          dragRotation.current.y += dx * 0.01;
-          dragRotation.current.x += dy * 0.01;
-          previousMouse.current = { x: e.clientX, y: e.clientY };
-        }}
-        onPointerUp={() => {
-          isDragging.current = false;
-          setMorphed(false);
-        }}
-        onPointerLeave={() => {
-          isDragging.current = false;
-          setMorphed(false);
-        }}
-      >
+      <points ref={pointsRef} geometry={geometry}>
         <pointsMaterial
           size={0.05}
           color="#00d9ff"
@@ -197,7 +167,6 @@ function ParticleSphereInner() {
           sizeAttenuation
         />
       </points>
-
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={2} color="#00ffff" />
       <pointLight position={[-5, -5, -5]} intensity={1} color="#7700ff" />
@@ -206,9 +175,53 @@ function ParticleSphereInner() {
 }
 
 export default function ParticleSphere() {
+  const isLowPower = useLowPowerMode();
+  const dpr = isLowPower ? 1 : Math.min(window.devicePixelRatio, 2);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Shared mutable press state — plain object so no re-renders needed.
+  const pressRef = useRef<PressRef>({ pressed: false });
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+
+    const press = () => {
+      pressRef.current.pressed = true;
+    };
+    const release = () => {
+      pressRef.current.pressed = false;
+    };
+
+    // Pointer events cover both mouse and touch reliably.
+    el.addEventListener("pointerdown", press, { passive: true });
+    el.addEventListener("pointerup", release, { passive: true });
+    el.addEventListener("pointerleave", release, { passive: true });
+    el.addEventListener("pointercancel", release, { passive: true });
+
+    return () => {
+      el.removeEventListener("pointerdown", press);
+      el.removeEventListener("pointerup", release);
+      el.removeEventListener("pointerleave", release);
+      el.removeEventListener("pointercancel", release);
+    };
+  }, []);
+
   return (
-    <ThreeCanvas className="w-full h-full">
-      <ParticleSphereInner />
-    </ThreeCanvas>
+    <div
+      ref={wrapperRef}
+      className="w-full h-full"
+      style={{ touchAction: "none", cursor: "pointer" }}
+    >
+      <Canvas
+        className="w-full h-full"
+        dpr={dpr}
+        camera={{ position: [0, 0, 5], fov: 50 }}
+        gl={{ antialias: !isLowPower, alpha: true }}
+        performance={{ min: 0.5 }}
+      >
+        <ParticleSphereInner pressRef={pressRef.current} />
+      </Canvas>
+    </div>
   );
 }
