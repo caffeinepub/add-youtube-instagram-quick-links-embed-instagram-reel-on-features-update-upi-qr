@@ -121,6 +121,13 @@ const funTools: ToolItem[] = [
     description: "Roll 1–6 dice with animated results",
     icon: "🎲",
   },
+  {
+    id: "image-generator",
+    name: "Image Generator",
+    description:
+      "Generate abstract art, gradients & patterns — download as PNG",
+    icon: "🎨",
+  },
 ];
 
 const devTools: ToolItem[] = [
@@ -183,7 +190,7 @@ const categories = [
   {
     icon: "🎲",
     name: "Fun & Utility",
-    description: "Password generator, coin flip, dice roller & more",
+    description: "Password generator, coin flip, dice roller, image gen & more",
     tools: funTools,
     comingSoon: false,
   },

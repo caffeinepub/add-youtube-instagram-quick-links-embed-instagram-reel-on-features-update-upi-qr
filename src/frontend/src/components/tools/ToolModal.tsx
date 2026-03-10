@@ -6,6 +6,7 @@ import QRCodeGenerator from "./dev/QRCodeGenerator";
 import UUIDGenerator from "./dev/UUIDGenerator";
 import CoinFlip from "./fun/CoinFlip";
 import DiceRoller from "./fun/DiceRoller";
+import ImageGenerator from "./fun/ImageGenerator";
 import PasswordGenerator from "./fun/PasswordGenerator";
 import PasswordStrengthChecker from "./fun/PasswordStrengthChecker";
 import RandomNamePicker from "./fun/RandomNamePicker";
@@ -55,6 +56,8 @@ function ToolContent({ toolId }: { toolId: string }) {
       return <CoinFlip />;
     case "dice-roller":
       return <DiceRoller />;
+    case "image-generator":
+      return <ImageGenerator />;
     case "binary-converter":
       return <BinaryConverter />;
     case "qr-code-generator":
