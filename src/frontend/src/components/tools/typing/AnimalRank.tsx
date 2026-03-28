@@ -119,6 +119,8 @@ export default function AnimalRank({ score, type }: AnimalRankProps) {
   const ranks =
     type === "wpm" ? WPM_RANKS : type === "cpm" ? CPM_RANKS : CPS_RANKS;
   const rank = ranks.find((r) => score <= r.max) ?? ranks[ranks.length - 1];
+  const verb = type === "cps" ? "click" : "type";
+  const label = type === "wpm" ? "WPM" : type === "cpm" ? "CPM" : "CPM";
   return (
     <div
       className="text-center py-6 px-4 rounded-2xl border border-cyan-500/30 bg-cyan-500/5"
@@ -131,12 +133,11 @@ export default function AnimalRank({ score, type }: AnimalRankProps) {
       </style>
       <div className="text-6xl mb-2">{rank.emoji}</div>
       <p className="text-xl font-bold font-mono text-cyan-300">
-        You type like a {rank.name}!
+        You {verb} like a {rank.name}!
       </p>
       <p className="text-sm text-slate-400 mt-1">{rank.msg}</p>
       <p className="text-3xl font-bold font-mono text-white mt-3">
-        {score}{" "}
-        <span className="text-sm text-slate-400">{type.toUpperCase()}</span>
+        {score} <span className="text-sm text-slate-400">{label}</span>
       </p>
     </div>
   );

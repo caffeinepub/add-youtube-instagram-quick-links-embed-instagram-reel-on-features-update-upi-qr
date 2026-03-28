@@ -10,6 +10,7 @@ import ImageGenerator from "./fun/ImageGenerator";
 import PasswordGenerator from "./fun/PasswordGenerator";
 import PasswordStrengthChecker from "./fun/PasswordStrengthChecker";
 import RandomNamePicker from "./fun/RandomNamePicker";
+import VideoGenerator from "./fun/VideoGenerator";
 import MarginSafetyChecker from "./print/MarginSafetyChecker";
 import PageSizeConverter from "./print/PageSizeConverter";
 import PrintingCostCalculator from "./print/PrintingCostCalculator";
@@ -58,6 +59,8 @@ function ToolContent({ toolId }: { toolId: string }) {
       return <DiceRoller />;
     case "image-generator":
       return <ImageGenerator />;
+    case "video-generator":
+      return <VideoGenerator />;
     case "binary-converter":
       return <BinaryConverter />;
     case "qr-code-generator":

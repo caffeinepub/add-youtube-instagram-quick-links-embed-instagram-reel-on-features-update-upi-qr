@@ -1,374 +1,291 @@
 import { useCallback, useRef, useState } from "react";
 
-type Style =
-  | "abstract-geometric"
-  | "gradient-wave"
-  | "neon-burst"
-  | "bokeh-circles"
-  | "starfield"
-  | "pixel-mosaic";
+type AIModel = {
+  id: string;
+  pollinationsId: string;
+  label: string;
+  description: string;
+  emoji: string;
+};
 
-type SizeOption = { label: string; w: number; h: number };
+const AI_MODELS: AIModel[] = [
+  {
+    id: "flux1",
+    pollinationsId: "flux",
+    label: "FLUX.1 Standard",
+    description: "Fast, sharp, photorealistic quality",
+    emoji: "⚡",
+  },
+  {
+    id: "flux1-realism",
+    pollinationsId: "flux-realism",
+    label: "FLUX.1 Realism",
+    description: "Photorealistic scenes & portraits",
+    emoji: "📸",
+  },
+  {
+    id: "sdxl",
+    pollinationsId: "turbo",
+    label: "Stable Diffusion XL",
+    description: "High-res detail, SDXL style",
+    emoji: "🖼️",
+  },
+  {
+    id: "openjourney",
+    pollinationsId: "flux-anime",
+    label: "OpenJourney",
+    description: "Midjourney-inspired artistic style",
+    emoji: "🎨",
+  },
+  {
+    id: "kandinsky",
+    pollinationsId: "flux-3d",
+    label: "Kandinsky",
+    description: "Vivid, surreal artistic generation",
+    emoji: "🌀",
+  },
+  {
+    id: "deepfloyd",
+    pollinationsId: "flux-cablyai",
+    label: "DeepFloyd IF",
+    description: "Deep photorealism & text clarity",
+    emoji: "🔮",
+  },
+  {
+    id: "sd15",
+    pollinationsId: "gptimage",
+    label: "Stable Diffusion 1.5",
+    description: "Classic SD, versatile & creative",
+    emoji: "🎭",
+  },
+  {
+    id: "kontext",
+    pollinationsId: "kontext",
+    label: "FLUX Kontext",
+    description: "Context-aware intelligent generation",
+    emoji: "🧠",
+  },
+];
 
-const SIZES: SizeOption[] = [
+const SIZE_OPTIONS = [
   { label: "512 × 512", w: 512, h: 512 },
-  { label: "800 × 600", w: 800, h: 600 },
-  { label: "1024 × 1024", w: 1024, h: 1024 },
+  { label: "768 × 512 (wide)", w: 768, h: 512 },
+  { label: "512 × 768 (tall)", w: 512, h: 768 },
+  { label: "1024 × 1024 (HD)", w: 1024, h: 1024 },
   { label: "1200 × 630 (social)", w: 1200, h: 630 },
 ];
 
-const STYLES: { id: Style; label: string; emoji: string }[] = [
-  { id: "abstract-geometric", label: "Abstract Geometric", emoji: "🔷" },
-  { id: "gradient-wave", label: "Gradient Wave", emoji: "🌊" },
-  { id: "neon-burst", label: "Neon Burst", emoji: "💥" },
-  { id: "bokeh-circles", label: "Bokeh Circles", emoji: "✨" },
-  { id: "starfield", label: "Starfield", emoji: "🌌" },
-  { id: "pixel-mosaic", label: "Pixel Mosaic", emoji: "🜦" },
+const PROMPT_SUGGESTIONS = [
+  "A futuristic city skyline at night with neon lights",
+  "A mystical forest with glowing mushrooms and fireflies",
+  "An astronaut floating in a colorful nebula",
+  "A cyberpunk street market in the rain",
+  "A serene Japanese garden with cherry blossoms",
+  "A dragon soaring over snow-capped mountains",
+  "Abstract art with swirling galaxies and planets",
+  "A cozy coffee shop interior with warm lighting",
 ];
 
-function rnd(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
-
-function rndInt(min: number, max: number) {
-  return Math.floor(rnd(min, max + 1));
-}
-
-function hsl(h: number, s: number, l: number, a = 1) {
-  return `hsla(${h},${s}%,${l}%,${a})`;
-}
-
-function drawAbstractGeometric(
-  ctx: CanvasRenderingContext2D,
-  w: number,
-  h: number,
-) {
-  ctx.fillStyle = hsl(rndInt(200, 270), 20, 8);
-  ctx.fillRect(0, 0, w, h);
-  const count = rndInt(30, 55);
-  for (let i = 0; i < count; i++) {
-    const sides = rndInt(3, 6);
-    const cx = rnd(0, w);
-    const cy = rnd(0, h);
-    const r = rnd(30, 180);
-    const hue = rndInt(160, 340);
-    const alpha = rnd(0.25, 0.75);
-    ctx.beginPath();
-    for (let j = 0; j <= sides; j++) {
-      const angle = (j / sides) * Math.PI * 2 - Math.PI / 2;
-      const x = cx + Math.cos(angle) * r;
-      const y = cy + Math.sin(angle) * r;
-      j === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.fillStyle = hsl(hue, 80, 60, alpha);
-    ctx.fill();
-    if (Math.random() > 0.5) {
-      ctx.strokeStyle = hsl(hue, 90, 75, 0.6);
-      ctx.lineWidth = rnd(0.5, 2);
-      ctx.stroke();
-    }
-  }
-}
-
-function drawGradientWave(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const bg = ctx.createLinearGradient(0, 0, w, h);
-  const baseHue = rndInt(0, 360);
-  bg.addColorStop(0, hsl(baseHue, 60, 10));
-  bg.addColorStop(1, hsl((baseHue + 120) % 360, 60, 15));
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, w, h);
-  const bands = rndInt(6, 14);
-  for (let i = 0; i < bands; i++) {
-    const hue = (baseHue + (i / bands) * 260) % 360;
-    const amp = rnd(h * 0.04, h * 0.18);
-    const freq = rnd(0.003, 0.012);
-    const phase = rnd(0, Math.PI * 2);
-    const yBase = (i / bands) * h + h / (bands * 2);
-    const grad = ctx.createLinearGradient(0, yBase - amp, 0, yBase + amp);
-    grad.addColorStop(0, hsl(hue, 85, 65, 0));
-    grad.addColorStop(0.5, hsl(hue, 85, 65, rnd(0.5, 0.85)));
-    grad.addColorStop(1, hsl(hue, 85, 65, 0));
-    ctx.beginPath();
-    ctx.moveTo(0, yBase);
-    for (let x = 0; x <= w; x += 2) {
-      ctx.lineTo(x, yBase + Math.sin(x * freq + phase) * amp);
-    }
-    for (let x = w; x >= 0; x -= 2) {
-      ctx.lineTo(x, yBase + Math.sin(x * freq + phase + Math.PI) * (amp * 0.6));
-    }
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
-  }
-}
-
-function drawNeonBurst(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  ctx.fillStyle = "#02040a";
-  ctx.fillRect(0, 0, w, h);
-  const cx = w / 2 + rnd(-w * 0.1, w * 0.1);
-  const cy = h / 2 + rnd(-h * 0.1, h * 0.1);
-  const rays = rndInt(60, 140);
-  const neonColors = [
-    "#00ffff",
-    "#ff00ff",
-    "#00ff88",
-    "#ff6600",
-    "#8800ff",
-    "#ffee00",
-  ];
-  for (let i = 0; i < rays; i++) {
-    const angle = (i / rays) * Math.PI * 2;
-    const len = rnd(Math.min(w, h) * 0.3, Math.max(w, h) * 0.85);
-    const color = neonColors[rndInt(0, neonColors.length - 1)];
-    const grad = ctx.createLinearGradient(
-      cx,
-      cy,
-      cx + Math.cos(angle) * len,
-      cy + Math.sin(angle) * len,
-    );
-    grad.addColorStop(0, `${color}aa`);
-    grad.addColorStop(0.6, `${color}55`);
-    grad.addColorStop(1, `${color}00`);
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = rnd(0.5, 2.5);
-    ctx.stroke();
-  }
-  const core = ctx.createRadialGradient(
-    cx,
-    cy,
-    0,
-    cx,
-    cy,
-    Math.min(w, h) * 0.12,
-  );
-  core.addColorStop(0, "rgba(255,255,255,0.95)");
-  core.addColorStop(0.3, "rgba(0,255,255,0.5)");
-  core.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.beginPath();
-  ctx.arc(cx, cy, Math.min(w, h) * 0.12, 0, Math.PI * 2);
-  ctx.fillStyle = core;
-  ctx.fill();
-}
-
-function drawBokehCircles(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const bgHue = rndInt(200, 280);
-  ctx.fillStyle = hsl(bgHue, 40, 6);
-  ctx.fillRect(0, 0, w, h);
-  const count = rndInt(40, 80);
-  const neonHues = [180, 280, 120, 30, 320];
-  for (let i = 0; i < count; i++) {
-    const x = rnd(0, w);
-    const y = rnd(0, h);
-    const r = rnd(10, 120);
-    const hue = neonHues[rndInt(0, neonHues.length - 1)];
-    const alpha = rnd(0.05, 0.35);
-    const blur = r * rnd(0.4, 0.9);
-    ctx.save();
-    ctx.filter = `blur(${blur}px)`;
-    const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
-    grad.addColorStop(0, hsl(hue, 90, 75, alpha * 1.5));
-    grad.addColorStop(0.6, hsl(hue, 80, 65, alpha));
-    grad.addColorStop(1, hsl(hue, 70, 55, 0));
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
-    ctx.restore();
-    if (Math.random() > 0.6) {
-      ctx.beginPath();
-      ctx.arc(x, y, r * 0.15, 0, Math.PI * 2);
-      ctx.fillStyle = hsl(hue, 95, 90, 0.7);
-      ctx.fill();
-    }
-  }
-}
-
-function drawStarfield(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const bg = ctx.createRadialGradient(
-    w / 2,
-    h / 2,
-    0,
-    w / 2,
-    h / 2,
-    Math.max(w, h),
-  );
-  bg.addColorStop(0, hsl(220, 60, 8));
-  bg.addColorStop(0.5, hsl(230, 50, 5));
-  bg.addColorStop(1, hsl(240, 40, 3));
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, w, h);
-  const nebulae = rndInt(2, 4);
-  for (let n = 0; n < nebulae; n++) {
-    const nx = rnd(0, w);
-    const ny = rnd(0, h);
-    const nr = rnd(w * 0.2, w * 0.5);
-    const nhue = rndInt(200, 290);
-    const ngrad = ctx.createRadialGradient(nx, ny, 0, nx, ny, nr);
-    ngrad.addColorStop(0, hsl(nhue, 80, 30, 0.12));
-    ngrad.addColorStop(1, hsl(nhue, 60, 20, 0));
-    ctx.beginPath();
-    ctx.arc(nx, ny, nr, 0, Math.PI * 2);
-    ctx.fillStyle = ngrad;
-    ctx.fill();
-  }
-  const starCount = rndInt(300, 600);
-  for (let i = 0; i < starCount; i++) {
-    const x = rnd(0, w);
-    const y = rnd(0, h);
-    const r = rnd(0.3, Math.random() > 0.95 ? 2.5 : 1.2);
-    const bright = rnd(0.4, 1);
-    const hue = rndInt(190, 260);
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = hsl(hue, 40, 95, bright);
-    ctx.fill();
-    if (r > 1.8 && Math.random() > 0.5) {
-      ctx.beginPath();
-      ctx.arc(x, y, r * 3, 0, Math.PI * 2);
-      ctx.fillStyle = hsl(hue, 60, 90, 0.08);
-      ctx.fill();
-    }
-  }
-}
-
-function drawPixelMosaic(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const tileSize = rndInt(18, 48);
-  const cols = Math.ceil(w / tileSize);
-  const rows = Math.ceil(h / tileSize);
-  const baseHue = rndInt(0, 360);
-  const palette = Array.from({ length: 8 }, (_, i) =>
-    hsl((baseHue + i * 45) % 360, rnd(55, 90), rnd(40, 70)),
-  );
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const color = palette[rndInt(0, palette.length - 1)];
-      ctx.fillStyle = color;
-      ctx.fillRect(col * tileSize, row * tileSize, tileSize - 1, tileSize - 1);
-      if (Math.random() > 0.8) {
-        ctx.fillStyle = "rgba(255,255,255,0.12)";
-        ctx.fillRect(col * tileSize, row * tileSize, tileSize - 1, 2);
-      }
-    }
-  }
-  ctx.fillStyle = "rgba(0,0,0,0.18)";
-  for (let row = 0; row < rows; row++) {
-    ctx.fillRect(0, row * tileSize + tileSize - 1, w, 1);
-  }
-  for (let col = 0; col < cols; col++) {
-    ctx.fillRect(col * tileSize + tileSize - 1, 0, 1, h);
-  }
-}
-
-function generateImage(
-  canvas: HTMLCanvasElement,
-  style: Style,
-  size: SizeOption,
-) {
-  canvas.width = size.w;
-  canvas.height = size.h;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  switch (style) {
-    case "abstract-geometric":
-      drawAbstractGeometric(ctx, size.w, size.h);
-      break;
-    case "gradient-wave":
-      drawGradientWave(ctx, size.w, size.h);
-      break;
-    case "neon-burst":
-      drawNeonBurst(ctx, size.w, size.h);
-      break;
-    case "bokeh-circles":
-      drawBokehCircles(ctx, size.w, size.h);
-      break;
-    case "starfield":
-      drawStarfield(ctx, size.w, size.h);
-      break;
-    case "pixel-mosaic":
-      drawPixelMosaic(ctx, size.w, size.h);
-      break;
-  }
-}
+const TIMEOUT_MS = 45000;
 
 export default function ImageGenerator() {
-  const [style, setStyle] = useState<Style>("abstract-geometric");
+  const [model, setModel] = useState<string>("flux1");
+  const [prompt, setPrompt] = useState("");
   const [sizeIdx, setSizeIdx] = useState(0);
-  const [generated, setGenerated] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showModelDropdown, setShowModelDropdown] = useState(false);
+  const [loadingDots, setLoadingDots] = useState("");
+  const abortRef = useRef<AbortController | null>(null);
+  const dotsTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const handleGenerate = useCallback(() => {
-    if (!canvasRef.current) return;
-    generateImage(canvasRef.current, style, SIZES[sizeIdx]);
-    setGenerated(true);
-  }, [style, sizeIdx]);
+  const selectedModel = AI_MODELS.find((m) => m.id === model) ?? AI_MODELS[0];
+  const selectedSize = SIZE_OPTIONS[sizeIdx];
+
+  const handleGenerate = useCallback(async () => {
+    const trimmed = prompt.trim();
+    if (!trimmed) {
+      setError("Please enter a prompt to generate an image.");
+      return;
+    }
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setLoading(true);
+    setError(null);
+    setImageUrl(null);
+
+    // start animated dots
+    let dotCount = 0;
+    dotsTimerRef.current = setInterval(() => {
+      dotCount = (dotCount + 1) % 4;
+      setLoadingDots(".".repeat(dotCount));
+    }, 500);
+
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+    try {
+      const encoded = encodeURIComponent(trimmed);
+      const seed = Math.floor(Math.random() * 999999);
+      const url = `https://image.pollinations.ai/prompt/${encoded}?model=${selectedModel.pollinationsId}&width=${selectedSize.w}&height=${selectedSize.h}&seed=${seed}&nologo=true&enhance=true`;
+      const res = await fetch(url, { signal: controller.signal });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      setImageUrl(objectUrl);
+    } catch (e: unknown) {
+      if ((e as Error).name === "AbortError") {
+        setError("Generation timed out. Try a shorter prompt or smaller size.");
+      } else {
+        setError(
+          e instanceof Error
+            ? e.message
+            : "Generation failed. Try again or pick a different model.",
+        );
+      }
+    } finally {
+      clearTimeout(timer);
+      if (dotsTimerRef.current) {
+        clearInterval(dotsTimerRef.current);
+        dotsTimerRef.current = null;
+      }
+      setLoadingDots("");
+      setLoading(false);
+    }
+  }, [prompt, selectedModel, selectedSize]);
+
+  const handleCancel = () => {
+    abortRef.current?.abort();
+  };
 
   const handleDownload = useCallback(() => {
-    if (!canvasRef.current || !generated) return;
-    const url = canvasRef.current.toDataURL("image/png");
+    if (!imageUrl) return;
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `jollytech-${style}-${Date.now()}.png`;
+    a.href = imageUrl;
+    a.download = `jollytech-${selectedModel.id}-${Date.now()}.png`;
     a.click();
-  }, [generated, style]);
-
-  const selectedStyle = STYLES.find((s) => s.id === style)!;
-  const selectedSize = SIZES[sizeIdx];
+  }, [imageUrl, selectedModel]);
 
   return (
     <div className="space-y-5 font-mono">
       <p className="text-slate-400 text-xs leading-relaxed">
-        Generate stunning abstract art directly in your browser. Choose a style
-        and size, hit Generate — each result is unique. Download as PNG.
+        Generate AI images free — powered by FLUX.1 & Stable Diffusion models
+        via Pollinations.ai. No API key needed.
       </p>
 
-      {/* Style selector */}
+      {/* Model dropdown */}
       <div className="space-y-2">
         <p className="text-xs text-slate-400 uppercase tracking-widest">
-          Style
+          AI Model
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {STYLES.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              data-ocid="image_gen.style_select"
-              onClick={() => {
-                setStyle(s.id);
-                setGenerated(false);
-              }}
-              className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-xs transition-all ${
-                style === s.id
-                  ? "border-cyan-400/60 bg-cyan-500/15 text-cyan-300 shadow-[0_0_12px_rgba(0,217,255,0.2)]"
-                  : "border-slate-700/60 bg-slate-900/50 text-slate-400 hover:border-slate-600 hover:text-slate-300"
+        <div className="relative">
+          <button
+            type="button"
+            data-ocid="image_gen.model_select"
+            onClick={() => setShowModelDropdown((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-cyan-500/40 bg-slate-900/70 text-slate-200 text-sm hover:border-cyan-400/60 transition-all focus:outline-none"
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-base">{selectedModel.emoji}</span>
+              <span className="font-bold text-cyan-300">
+                {selectedModel.label}
+              </span>
+              <span className="text-slate-500 text-xs hidden sm:inline">
+                — {selectedModel.description}
+              </span>
+            </span>
+            <span
+              className={`text-slate-400 transition-transform duration-200 ${
+                showModelDropdown ? "rotate-180" : ""
               }`}
             >
-              <span className="text-base">{s.emoji}</span>
-              <span>{s.label}</span>
+              ▼
+            </span>
+          </button>
+
+          {showModelDropdown && (
+            <div className="absolute z-50 w-full mt-1 rounded-xl border border-slate-700/80 bg-slate-950/95 backdrop-blur-md shadow-2xl overflow-hidden">
+              {AI_MODELS.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => {
+                    setModel(m.id);
+                    setShowModelDropdown(false);
+                    setImageUrl(null);
+                    setError(null);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition-all ${
+                    model === m.id
+                      ? "bg-cyan-500/15 text-cyan-300"
+                      : "text-slate-300 hover:bg-slate-800/60"
+                  }`}
+                >
+                  <span className="text-base w-6 text-center">{m.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-xs">{m.label}</div>
+                    <div className="text-slate-500 text-xs truncate">
+                      {m.description}
+                    </div>
+                  </div>
+                  {model === m.id && (
+                    <span className="text-cyan-400 text-xs">✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Prompt input */}
+      <div className="space-y-2">
+        <p className="text-xs text-slate-400 uppercase tracking-widest">
+          Prompt
+        </p>
+        <textarea
+          data-ocid="image_gen.textarea"
+          value={prompt}
+          onChange={(e) => {
+            setPrompt(e.target.value);
+            setError(null);
+          }}
+          placeholder="Describe the image you want to generate..."
+          rows={3}
+          className="w-full px-4 py-3 rounded-xl border border-slate-700/60 bg-slate-900/60 text-slate-200 text-sm placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 resize-none transition-all"
+        />
+        <div className="flex flex-wrap gap-1.5">
+          {PROMPT_SUGGESTIONS.slice(0, 4).map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => {
+                setPrompt(s);
+                setError(null);
+              }}
+              className="text-xs px-2.5 py-1 rounded-full border border-slate-700/50 bg-slate-900/40 text-slate-500 hover:text-slate-300 hover:border-slate-600 transition-all truncate max-w-[180px]"
+            >
+              {s}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Size selector */}
+      {/* Size */}
       <div className="space-y-2">
         <p className="text-xs text-slate-400 uppercase tracking-widest">
-          Canvas Size
+          Output Size
         </p>
-        <div className="grid grid-cols-2 gap-2">
-          {SIZES.map((sz, i) => (
+        <div className="flex flex-wrap gap-2">
+          {SIZE_OPTIONS.map((sz, i) => (
             <button
               key={sz.label}
               type="button"
               data-ocid="image_gen.size_select"
-              onClick={() => {
-                setSizeIdx(i);
-                setGenerated(false);
-              }}
-              className={`px-3 py-2 rounded-lg border text-xs transition-all text-left ${
+              onClick={() => setSizeIdx(i)}
+              className={`px-3 py-1.5 rounded-lg border text-xs transition-all ${
                 sizeIdx === i
                   ? "border-purple-400/60 bg-purple-500/15 text-purple-300"
                   : "border-slate-700/60 bg-slate-900/50 text-slate-400 hover:border-slate-600 hover:text-slate-300"
@@ -380,58 +297,93 @@ export default function ImageGenerator() {
         </div>
       </div>
 
-      {/* Action buttons */}
+      {error && (
+        <div
+          data-ocid="image_gen.error_state"
+          className="px-4 py-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-400 text-xs"
+        >
+          {error}
+        </div>
+      )}
+
       <div className="flex gap-3">
         <button
           type="button"
           data-ocid="image_gen.primary_button"
           onClick={handleGenerate}
-          className="flex-1 py-3 rounded-xl border border-cyan-500/50 bg-cyan-500/10 text-cyan-300 text-sm font-bold hover:bg-cyan-500/20 hover:shadow-[0_0_20px_rgba(0,217,255,0.25)] transition-all active:scale-[0.97]"
+          disabled={loading}
+          className="flex-1 py-3 rounded-xl border border-cyan-500/50 bg-cyan-500/10 text-cyan-300 text-sm font-bold hover:bg-cyan-500/20 hover:shadow-[0_0_20px_rgba(0,217,255,0.25)] transition-all active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {selectedStyle.emoji} Generate
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="inline-block w-4 h-4 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
+              Generating{loadingDots}
+            </span>
+          ) : (
+            `${selectedModel.emoji} Generate`
+          )}
         </button>
+        {loading && (
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="px-4 py-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-400 text-xs font-bold hover:bg-red-500/20 transition-all"
+          >
+            Cancel
+          </button>
+        )}
         <button
           type="button"
           data-ocid="image_gen.secondary_button"
           onClick={handleDownload}
-          disabled={!generated}
+          disabled={!imageUrl || loading}
           className="flex-1 py-3 rounded-xl border border-purple-500/50 bg-purple-500/10 text-purple-300 text-sm font-bold hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.25)] transition-all active:scale-[0.97] disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          ⬇ Download PNG
+          ⬇ Download
         </button>
       </div>
 
-      {/* Canvas preview */}
       <div
         className="relative rounded-xl overflow-hidden border border-slate-700/60 bg-slate-900 flex items-center justify-center"
         style={{ minHeight: 220 }}
       >
-        {!generated && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-600 gap-2 z-10 pointer-events-none">
-            <span className="text-5xl">{selectedStyle.emoji}</span>
-            <p className="text-xs">{selectedStyle.label}</p>
+        {loading && (
+          <div
+            data-ocid="image_gen.loading_state"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10"
+          >
+            <div className="w-10 h-10 border-4 border-cyan-400/20 border-t-cyan-400 rounded-full animate-spin" />
+            <p className="text-xs text-cyan-400 animate-pulse">
+              {selectedModel.label} is generating{loadingDots}
+            </p>
+            <p className="text-xs text-slate-600">
+              {selectedSize.w}×{selectedSize.h}px · may take up to 30s
+            </p>
+          </div>
+        )}
+        {!loading && !imageUrl && (
+          <div className="flex flex-col items-center justify-center text-slate-600 gap-2 py-10">
+            <span className="text-5xl">{selectedModel.emoji}</span>
+            <p className="text-xs">{selectedModel.label}</p>
             <p className="text-xs text-slate-700">
               {selectedSize.w} × {selectedSize.h}px
             </p>
           </div>
         )}
-        <canvas
-          ref={canvasRef}
-          style={{
-            maxWidth: "100%",
-            maxHeight: "380px",
-            display: "block",
-            opacity: generated ? 1 : 0,
-            borderRadius: "0.75rem",
-            transition: "opacity 0.3s ease",
-          }}
-        />
+        {imageUrl && !loading && (
+          <img
+            src={imageUrl}
+            alt={prompt}
+            className="w-full object-contain"
+            style={{ maxHeight: 420, display: "block" }}
+          />
+        )}
       </div>
 
-      {generated && (
+      {imageUrl && !loading && (
         <p className="text-center text-xs text-slate-600">
-          {selectedSize.w} × {selectedSize.h}px · {selectedStyle.label} · Hit
-          generate again for a new variation
+          {selectedSize.w}×{selectedSize.h}px · {selectedModel.label} · Generate
+          again for a new variation
         </p>
       )}
     </div>

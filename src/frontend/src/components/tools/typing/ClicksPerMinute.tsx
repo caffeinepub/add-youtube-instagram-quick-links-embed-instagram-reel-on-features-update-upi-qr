@@ -10,6 +10,10 @@ export default function ClicksPerMinute() {
   const [clicks, setClicks] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
   const [cpm, setCpm] = useState(0);
+  const [finalStats, setFinalStats] = useState<{
+    cpm: number;
+    clicks: number;
+  } | null>(null);
   const startRef = useRef<number>(0);
   const clicksRef = useRef(0);
   const durRef = useRef(10);
@@ -44,6 +48,8 @@ export default function ClicksPerMinute() {
       const mins = elapsed / 60;
       setCpm(mins > 0 ? Math.round(clicksRef.current / mins) : 0);
       if (remaining <= 0) {
+        const finalCpm = Math.round(clicksRef.current / (d / 60));
+        setFinalStats({ cpm: finalCpm, clicks: clicksRef.current });
         clearInterval(iv);
         setPhase("done");
       }
@@ -54,6 +60,7 @@ export default function ClicksPerMinute() {
   const reset = () => {
     const d = getD();
     clicksRef.current = 0;
+    setFinalStats(null);
     setPhase("idle");
     setClicks(0);
     setTimeLeft(d);
@@ -127,15 +134,19 @@ export default function ClicksPerMinute() {
 
       {phase === "done" && (
         <div className="space-y-4">
-          <AnimalRank score={cpm} type="cps" />
+          <AnimalRank score={finalStats?.cpm ?? 0} type="cps" />
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-xl bg-slate-900/60 border border-slate-700 p-3">
               <p className="text-slate-500">Total Clicks</p>
-              <p className="text-cyan-400 font-bold text-xl">{clicks}</p>
+              <p className="text-cyan-400 font-bold text-xl">
+                {finalStats?.clicks ?? 0}
+              </p>
             </div>
             <div className="rounded-xl bg-slate-900/60 border border-slate-700 p-3">
               <p className="text-slate-500">Clicks/min</p>
-              <p className="text-purple-400 font-bold text-xl">{cpm}</p>
+              <p className="text-purple-400 font-bold text-xl">
+                {finalStats?.cpm ?? 0}
+              </p>
             </div>
           </div>
           <button

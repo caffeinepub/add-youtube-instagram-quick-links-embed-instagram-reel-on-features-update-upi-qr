@@ -123,10 +123,15 @@ const funTools: ToolItem[] = [
   },
   {
     id: "image-generator",
-    name: "Image Generator",
-    description:
-      "Generate abstract art, gradients & patterns — download as PNG",
+    name: "AI Image Generator",
+    description: "FLUX.1, SDXL, OpenJourney & more — free, no API key",
     icon: "🎨",
+  },
+  {
+    id: "video-generator",
+    name: "AI Video Generator",
+    description: "AnimateDiff, SVD, ModelScope — text-to-video free",
+    icon: "🎬",
   },
 ];
 
@@ -190,7 +195,7 @@ const categories = [
   {
     icon: "🎲",
     name: "Fun & Utility",
-    description: "Password generator, coin flip, dice roller, image gen & more",
+    description: "Password tools, dice, coin flip, AI image & video generator",
     tools: funTools,
     comingSoon: false,
   },

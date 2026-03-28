@@ -38,6 +38,11 @@ export default function CPMTest() {
   const [cpm, setCpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
   const [mistakes, setMistakes] = useState(0);
+  const [finalStats, setFinalStats] = useState<{
+    cpm: number;
+    accuracy: number;
+    mistakes: number;
+  } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const typedRef = useRef("");
   const textRef = useRef(text);
@@ -64,6 +69,7 @@ export default function CPMTest() {
     setCpm(0);
     setAccuracy(100);
     setMistakes(0);
+    setFinalStats(null);
     setPhase("running");
     setTimeout(() => inputRef.current?.focus(), 100);
   };
@@ -80,12 +86,22 @@ export default function CPMTest() {
       setAccuracy(stats.accuracy);
       setMistakes(stats.mistakes);
       if (remaining <= 0) {
+        const fs = calcStats(typedRef.current, 60);
+        setFinalStats(fs);
         clearInterval(iv);
         setPhase("done");
       }
     }, 200);
     return () => clearInterval(iv);
   }, [phase, calcStats]);
+
+  const handleEnterButton = () => {
+    if (phase !== "running") return;
+    const newVal = `${typedRef.current.trimEnd()} `;
+    typedRef.current = newVal;
+    setTyped(newVal);
+    inputRef.current?.focus();
+  };
 
   return (
     <div className="space-y-5 font-mono">
@@ -140,19 +156,37 @@ export default function CPMTest() {
             autoCorrect="off"
             spellCheck={false}
           />
+          <button
+            type="button"
+            onClick={handleEnterButton}
+            className="w-full py-3 rounded-xl bg-slate-800/80 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all text-sm tracking-widest font-bold"
+            data-ocid="typing.cpm.enter_button"
+          >
+            ↵ ENTER (Next Word)
+          </button>
         </div>
       )}
       {phase === "done" && (
         <div className="space-y-4">
-          <AnimalRank score={cpm} type="cpm" />
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <AnimalRank score={finalStats?.cpm ?? 0} type="cpm" />
+          <div className="grid grid-cols-3 gap-3 text-sm">
+            <div className="rounded-xl bg-slate-900/60 border border-slate-700 p-3">
+              <p className="text-slate-500">Final CPM</p>
+              <p className="text-cyan-400 font-bold text-xl">
+                {finalStats?.cpm ?? 0}
+              </p>
+            </div>
             <div className="rounded-xl bg-slate-900/60 border border-slate-700 p-3">
               <p className="text-slate-500">Accuracy</p>
-              <p className="text-green-400 font-bold text-xl">{accuracy}%</p>
+              <p className="text-green-400 font-bold text-xl">
+                {finalStats?.accuracy ?? 100}%
+              </p>
             </div>
             <div className="rounded-xl bg-slate-900/60 border border-slate-700 p-3">
               <p className="text-slate-500">Mistakes</p>
-              <p className="text-red-400 font-bold text-xl">{mistakes}</p>
+              <p className="text-red-400 font-bold text-xl">
+                {finalStats?.mistakes ?? 0}
+              </p>
             </div>
           </div>
           <button
